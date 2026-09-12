@@ -1,0 +1,25 @@
+{
+    "name": "felipeggarcia/banking-api",
+    "description": "In-memory banking API with deposit, withdraw and transfer operations.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Banking\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Felipe Garcia",
+            "email": "felipegogarcia@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^13.3"
+    }
+}
