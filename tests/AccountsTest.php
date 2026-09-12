@@ -18,4 +18,13 @@ final class AccountsTest extends TestCase
 
         $accounts->balanceOf('1234');
     }
+
+    public function test_deposit_creates_account_with_initial_balance(): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 10);
+
+        $this->assertSame(10, $accounts->balanceOf('100'));
+    }
 }

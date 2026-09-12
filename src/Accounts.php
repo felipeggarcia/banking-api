@@ -17,4 +17,15 @@ final class Accounts
 
         return $this->balances[$id];
     }
+
+    public function deposit(string $id, int $value): int
+    {
+        if (!isset($this->balances[$id])) {
+            $this->balances[$id] = 0;
+        }
+
+        $this->balances[$id] += $value;
+
+        return $this->balances[$id];
+    }
 }
