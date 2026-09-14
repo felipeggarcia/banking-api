@@ -135,6 +135,34 @@ final class AccountsTest extends TestCase
         $this->assertSame(50, $accounts->balanceOf('300'));
     }
 
+    public function test_transfer_with_insufficient_funds_is_rejected (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 10);
+        $accounts->deposit('300', 50);
+
+        $this->expectException(InsufficientFunds::class);
+
+        $accounts->transfer('100', '300', 20);
+    }
+
+    public function test_transfer_with_insufficient_funds_leaves_both_accounts_untouched (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 10);
+        $accounts->deposit('300', 50);
+
+        try {
+            $accounts->transfer('100', '300', 20);
+            $this->fail('Expected InsufficientFunds.');
+        } catch (InsufficientFunds) {}
+
+        $this->assertSame(50, $accounts->balanceOf('300'));
+        $this->assertSame(10, $accounts->balanceOf('100'));
+    }
+
 }
 
     

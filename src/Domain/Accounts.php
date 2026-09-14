@@ -53,6 +53,10 @@ final class Accounts
             $destinationBalance = $this->deposit($idDestination,0);
         }
 
+        if (($originBalance - $value)<0){
+            throw new InsufficientFunds($idOrigin);
+        }
+
         $this->balances[$idOrigin] = $originBalance - $value;
         $this->balances[$idDestination] = $destinationBalance + $value;
 
