@@ -56,7 +56,7 @@ final class RouterTest extends TestCase
         $accounts = new Accounts();
         $router = new Router($accounts);
 
-            $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode([
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode([
             'type' => 'deposit',
             'destination' => '100',
             'amount' => 10,
@@ -65,6 +65,25 @@ final class RouterTest extends TestCase
         $this->assertSame(201, $response->getStatusCode());
         $this->assertSame('{"destination":{"id":"100","balance":10}}', (string) $response->getBody());
         $this->assertSame(10, $accounts->balanceOf('100'));
+
+    }
+
+        public function test_withdraw_event_reduces_balance_and_responds_201(): void
+    {
+        $accounts = new Accounts();
+        $accounts->deposit('100', 100);
+
+        $router = new Router($accounts);
+
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode([
+            'type' => 'withdraw',
+            'origin' => '100',
+            'amount' => 10,
+        ])));
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame('{"origin":{"id":"100","balance":90}}', (string) $response->getBody());
+        $this->assertSame(90, $accounts->balanceOf('100'));
 
     }
 }

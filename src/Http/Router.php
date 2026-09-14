@@ -48,15 +48,22 @@ final class Router
     {
         $body = json_decode((string) $request->getBody(), true);
 
-        $type= $body['type'];
-        $destination= $body['destination'];
-        $amount= $body['amount'];
+        $type = $body['type'];
+        $destination = $body['destination'] ?? '';
+        $origin = $body['origin'] ?? '';
+        $amount = $body['amount'];
 
         switch ($type){
             case 'deposit' :
                 $this->accounts->deposit($destination,$amount);
                 $balance = $this->accounts->balanceOf($destination);
                 $response['destination'] = ['id'=> $destination, 'balance'=>$balance];
+                return  new Response(201, [],  json_encode($response));
+
+            case 'withdraw' :
+                $this->accounts->withdraw($origin,$amount);
+                $balance = $this->accounts->balanceOf($origin);
+                $response['origin'] = ['id'=> $origin, 'balance'=>$balance];
                 return  new Response(201, [],  json_encode($response));
         }
 
