@@ -46,7 +46,12 @@ final class Accounts
     { 
 
         $originBalance = $this->balanceOf($idOrigin);
-        $destinationBalance = $this->balanceOf($idDestination);
+
+        if(isset($this->balances[$idDestination])){
+            $destinationBalance = $this->balances[$idDestination];
+        }else{
+            $destinationBalance = $this->deposit($idDestination,0);
+        }
 
         $this->balances[$idOrigin] = $originBalance - $value;
         $this->balances[$idDestination] = $destinationBalance + $value;

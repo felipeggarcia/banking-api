@@ -98,6 +98,18 @@ final class AccountsTest extends TestCase
         $this->assertSame(80, $accounts->balanceOf('100'));
     }
 
+    public function test_transfer_creates_non_existing_destination (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 100);
+
+        $accounts->transfer('100', '300', 20);
+
+        $this->assertSame(80, $accounts->balanceOf('100'));
+        $this->assertSame(20, $accounts->balanceOf('300'));
+    }
+
 }
 
     
