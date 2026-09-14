@@ -27,4 +27,15 @@ final class AccountsTest extends TestCase
 
         $this->assertSame(10, $accounts->balanceOf('100'));
     }
+
+    public function test_deposit_increases_balance_of_existing_account(): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 15);
+
+        $accounts->deposit('100', 10);
+
+        $this->assertSame(25, $accounts->balanceOf('100'));
+    }
 }
