@@ -28,5 +28,16 @@ final class RouterTest extends TestCase
         $accounts->balanceOf('100');
     }
 
+    public function test_balance_returns_the_balance_of_an_existing_account(): void
+    {
+        $accounts = new Accounts();
+        $accounts->deposit('100', 20);
 
+        $router = new Router($accounts);
+
+        $response = $router->handle(new ServerRequest('GET', '/balance?account_id=100'));
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('20', (string) $response->getBody());
+    }
 }
