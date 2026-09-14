@@ -156,4 +156,23 @@ final class RouterTest extends TestCase
         $this->assertSame('0', (string) $response->getBody());
 
     }
+
+    public function test_event_with_unknown_type_responds_400(): void
+    {
+        $accounts = new Accounts();
+        $accounts->deposit('100', 80);
+        $accounts->deposit('300', 20);
+
+        $router = new Router($accounts);
+
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode([
+            'type' => 'qwerty',
+            'origin' => '100',
+            'destination' => '300',
+            'amount' => 10,
+        ])));
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('0', (string) $response->getBody());
+    }
 }

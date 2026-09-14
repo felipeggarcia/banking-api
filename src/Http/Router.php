@@ -80,6 +80,9 @@ final class Router
                     'origin' => $this->snapshot($origin),
                     'destination' => $this->snapshot($destination),
                 ]);
+
+            default:
+                return new Response(400, [], '0');
         }
     }
 
