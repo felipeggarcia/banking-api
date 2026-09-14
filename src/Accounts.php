@@ -30,7 +30,7 @@ final class Accounts
     }
 
     public function withdraw(string $id,int $value): int
-    {   
+    { 
         $balance = $this->balanceOf($id);
 
         if (($balance-$value)<0){

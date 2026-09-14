@@ -48,6 +48,7 @@ final class AccountsTest extends TestCase
 
         $accounts->withdraw('1234',20);
     }
+
     public function test_withdraw_reduces_balance_of_existing_account(): void
     {
         $accounts = new Accounts();
@@ -68,6 +69,20 @@ final class AccountsTest extends TestCase
         $this->expectException(InsufficientFunds::class);
 
         $accounts->withdraw('100', 100);
+    }
+    
+    public function test_withdraw_with_insufficient_funds_leaves_balance_unchanged (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 20);
+
+        try {
+            $accounts->withdraw('100', 100);
+            $this->fail('Expected InsufficientFunds.');
+        } catch (InsufficientFunds) {}
+
+        $this->assertSame(20, $accounts->balanceOf('100'));
     }
 
 }
