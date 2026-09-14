@@ -44,7 +44,7 @@ final class Router
         }
     }
 
-        private function event(ServerRequestInterface $request): Response
+    private function event(ServerRequestInterface $request): Response
     {
         $body = json_decode((string) $request->getBody(), true);
 
@@ -53,27 +53,40 @@ final class Router
         $origin = $body['origin'] ?? '';
         $amount = $body['amount'];
 
-        switch ($type){
-            case 'deposit' :
-                $this->accounts->deposit($destination,$amount);
-                $balance = $this->accounts->balanceOf($destination);
-                $response['destination'] = ['id'=> $destination, 'balance'=>$balance];
-                return  new Response(201, [],  json_encode($response));
+        switch ($type) {
+            case 'deposit':
+                $this->accounts->deposit($destination, $amount);
 
-            case 'withdraw' :
-                $this->accounts->withdraw($origin,$amount);
-                $balance = $this->accounts->balanceOf($origin);
-                $response['origin'] = ['id'=> $origin, 'balance'=>$balance];
-                return  new Response(201, [],  json_encode($response));
+                return $this->created(['destination' => $this->snapshot($destination)]);
 
-            case 'transfer' :
-                $this->accounts->transfer($origin,$destination, $amount);
-                $originBalance = $this->accounts->balanceOf($origin);
-                $destinationBalance = $this->accounts->balanceOf($destination);
-                $response['origin'] = ['id'=> $origin, 'balance'=> $originBalance];
-                $response['destination'] = ['id'=> $destination, 'balance'=>$destinationBalance];
-                return  new Response(201, [],  json_encode($response));
+            case 'withdraw':
+                $this->accounts->withdraw($origin, $amount);
+
+                return $this->created(['origin' => $this->snapshot($origin)]);
+
+            case 'transfer':
+                $this->accounts->transfer($origin, $destination, $amount);
+
+                return $this->created([
+                    'origin' => $this->snapshot($origin),
+                    'destination' => $this->snapshot($destination),
+                ]);
         }
+    }
 
+    /**
+     * @return array{id: string, balance: int}
+     */
+    private function snapshot(string $id): array
+    {
+        return ['id' => $id, 'balance' => $this->accounts->balanceOf($id)];
+    }
+
+    /**
+     * @param array<string, array{id: string, balance: int}> $payload
+     */
+    private function created(array $payload): Response
+    {
+        return new Response(201, [], (string) json_encode($payload));
     }
 }
