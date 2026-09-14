@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Banking\Http;
 
 use Banking\Domain\Accounts;
+use Banking\Domain\AccountNotFound;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
 
@@ -34,8 +35,11 @@ final class Router
 
     private function balance(ServerRequestInterface $request): Response
     {
-        $id = (string) ($request->getQueryParams()['account_id'] ?? '');
-
-        return new Response(200, [], (string) $this->accounts->balanceOf($id));
+        try{
+            $id = (string) ($request->getQueryParams()['account_id'] ?? '');   
+             return new Response(200, [], (string) $this->accounts->balanceOf($id));
+        } catch (AccountNotFound) {
+            return new Response(404, [], '0');
+        }
     }
 }

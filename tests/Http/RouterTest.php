@@ -40,4 +40,14 @@ final class RouterTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('20', (string) $response->getBody());
     }
+
+    public function test_balance_of_non_existing_account_responds_404(): void
+    {
+        $router = new Router(new Accounts());
+
+        $response = $router->handle(new ServerRequest('GET', '/balance?account_id=1234'));
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('0', (string) $response->getBody());
+    }
 }
