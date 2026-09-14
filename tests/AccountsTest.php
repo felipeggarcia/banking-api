@@ -176,7 +176,32 @@ final class AccountsTest extends TestCase
 
         $this->expectException(AccountNotFound::class);
 
-        $this->assertSame(50, $accounts->balanceOf('300'));
+        $accounts->balanceOf('300');
+    }
+
+    public function test_reset_clears_all_accounts (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 10);
+        $accounts->deposit('300', 50);
+        
+        $accounts->reset();
+        
+        try {
+            $accounts->balanceOf('100');
+            $this->fail('Expected AccountNotFound.');
+        } catch (AccountNotFound) {
+            $this->addToAssertionCount(1);
+        }
+
+        try {
+            $accounts->balanceOf('300');
+            $this->fail('Expected AccountNotFound.');
+        } catch (AccountNotFound) {
+            $this->addToAssertionCount(1);
+        }
+
     }
 
 }

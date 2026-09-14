@@ -59,4 +59,9 @@ final class Accounts
         return $this->balances[$idOrigin];
     }
 
+    public function reset (): void
+    {
+        $this->balances = [];
+    }
+
 }
