@@ -23,6 +23,7 @@ final class RouterTest extends TestCase
         $response = $router->handle(new ServerRequest('POST', '/reset'));
 
         $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('OK', (string) $response->getBody());
 
         $this->expectException(AccountNotFound::class);
 
@@ -173,6 +174,17 @@ final class RouterTest extends TestCase
         ])));
 
         $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('0', (string) $response->getBody());
+    }
+    public function test_unknown_route_responds_404 (): void
+    {
+        $accounts = new Accounts();
+
+        $router = new Router($accounts);
+
+        $response = $router->handle(new ServerRequest('GET', '/unknown'));
+
+        $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('0', (string) $response->getBody());
     }
 }

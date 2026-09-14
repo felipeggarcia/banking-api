@@ -21,7 +21,7 @@ final class Router
         try {
             return $this->route($request);
         } catch (AccountNotFound) {
-            return new Response(404, [], '0');
+            return $this->notFound();
         } catch (InsufficientFunds) {
             return new Response(422, [], '0');
         }
@@ -36,6 +36,7 @@ final class Router
             $method === 'POST' && $path === '/reset' => $this->reset(),
             $method === 'POST' && $path === '/event' => $this->event($request),
             $method === 'GET' && $path === '/balance' => $this->balance($request),
+            default => $this->notFound()
         };
     }
 
@@ -43,7 +44,7 @@ final class Router
     {
         $this->accounts->reset();
 
-        return new Response(200);
+        return new Response(200,[],'OK');
     }
 
     private function balance(ServerRequestInterface $request): Response
@@ -100,6 +101,11 @@ final class Router
     private function created(array $payload): Response
     {
         return new Response(201, [], (string) json_encode($payload));
+    }
+
+    private function notFound(): Response
+    {
+        return new Response(404, [], '0');
     }
 
 }
