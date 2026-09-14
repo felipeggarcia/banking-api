@@ -65,6 +65,14 @@ final class Router
                 $balance = $this->accounts->balanceOf($origin);
                 $response['origin'] = ['id'=> $origin, 'balance'=>$balance];
                 return  new Response(201, [],  json_encode($response));
+
+            case 'transfer' :
+                $this->accounts->transfer($origin,$destination, $amount);
+                $originBalance = $this->accounts->balanceOf($origin);
+                $destinationBalance = $this->accounts->balanceOf($destination);
+                $response['origin'] = ['id'=> $origin, 'balance'=> $originBalance];
+                $response['destination'] = ['id'=> $destination, 'balance'=>$destinationBalance];
+                return  new Response(201, [],  json_encode($response));
         }
 
     }

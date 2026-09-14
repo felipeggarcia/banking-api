@@ -68,7 +68,7 @@ final class RouterTest extends TestCase
 
     }
 
-        public function test_withdraw_event_reduces_balance_and_responds_201(): void
+    public function test_withdraw_event_reduces_balance_and_responds_201(): void
     {
         $accounts = new Accounts();
         $accounts->deposit('100', 100);
@@ -84,6 +84,29 @@ final class RouterTest extends TestCase
         $this->assertSame(201, $response->getStatusCode());
         $this->assertSame('{"origin":{"id":"100","balance":90}}', (string) $response->getBody());
         $this->assertSame(90, $accounts->balanceOf('100'));
+
+    }
+
+    public function test_transfer_event_moves_money_and_responds_201(): void
+    {
+        $accounts = new Accounts();
+        $accounts->deposit('100', 80);
+        $accounts->deposit('300', 20);
+
+        $router = new Router($accounts);
+
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode([
+            'type' => 'transfer',
+            'origin' => '100',
+            'destination' => '300',
+            'amount' => 10,
+        ])));
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame('{"origin":{"id":"100","balance":70},"destination":{"id":"300","balance":30}}', (string) $response->getBody());
+
+        $this->assertSame(70, $accounts->balanceOf('100'));
+        $this->assertSame(30, $accounts->balanceOf('300'));
 
     }
 }
