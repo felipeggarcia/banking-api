@@ -42,4 +42,16 @@ final class Accounts
         return $this->balances[$id];
     }
 
+    public function transfer(string $idOrigin, string $idDestination, int $value): int
+    { 
+
+        $originBalance = $this->balanceOf($idOrigin);
+        $destinationBalance = $this->balanceOf($idDestination);
+
+        $this->balances[$idOrigin] = $originBalance - $value;
+        $this->balances[$idDestination] = $destinationBalance + $value;
+
+        return $this->balances[$idOrigin];
+    }
+
 }

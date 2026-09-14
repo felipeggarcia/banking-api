@@ -85,6 +85,19 @@ final class AccountsTest extends TestCase
         $this->assertSame(20, $accounts->balanceOf('100'));
     }
 
+    public function test_transfer_moves_money_between_existing_accounts (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 100);
+        $accounts->deposit('300', 50);
+
+        $accounts->transfer('100', '300', 20);
+
+        $this->assertSame(70, $accounts->balanceOf('300'));
+        $this->assertSame(80, $accounts->balanceOf('100'));
+    }
+
 }
 
     
