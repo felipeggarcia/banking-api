@@ -224,6 +224,42 @@ final class AccountsTest extends TestCase
         $accounts->deposit('100', $amount);
     }
 
+    public function test_transfer_of_entire_balance_is_allowed(): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 15);
+
+        $accounts->transfer('100', '300', 15);
+
+        $this->assertSame(0, $accounts->balanceOf('100'));
+        $this->assertSame(15, $accounts->balanceOf('300'));
+    }
+
+    #[DataProvider('nonPositiveAmounts')]
+    public function test_withdraw_rejects_non_positive_amount(int $amount): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 50);
+
+        $this->expectException(InvalidAmount::class);
+
+        $accounts->withdraw('100', $amount);
+    }
+
+    #[DataProvider('nonPositiveAmounts')]
+    public function test_transfer_rejects_non_positive_amount(int $amount): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 50);
+
+        $this->expectException(InvalidAmount::class);
+
+        $accounts->transfer('100', '300', $amount);
+    }
+
 }
 
     
