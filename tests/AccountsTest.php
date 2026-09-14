@@ -6,8 +6,11 @@ namespace Tests;
 
 use Banking\Domain\AccountNotFound;
 use Banking\Domain\InsufficientFunds;
+use Banking\Domain\InvalidAmount;
 use Banking\Domain\Accounts;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;  
+
 
 final class AccountsTest extends TestCase
 {
@@ -202,6 +205,23 @@ final class AccountsTest extends TestCase
             $this->addToAssertionCount(1);
         }
 
+    }
+
+    public static function nonPositiveAmounts(): array
+    {
+        return [
+            'negative' => [-10],
+            'zero'     => [0],
+        ];
+    }
+
+    #[DataProvider('nonPositiveAmounts')]
+    public function test_deposit_rejects_non_positive_amount(int $amount): void
+    {
+        $accounts = new Accounts();
+
+        $this->expectException(InvalidAmount::class);
+        $accounts->deposit('100', $amount);
     }
 
 }
