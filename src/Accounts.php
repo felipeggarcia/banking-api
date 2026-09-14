@@ -31,7 +31,13 @@ final class Accounts
 
     public function withdraw(string $id,int $value): int
     {   
-        $this->balances[$id] = $this->balanceOf($id) - $value;
+        $balance = $this->balanceOf($id);
+
+        if (($balance-$value)<0){
+            throw new InsufficientFunds($id);
+        }
+
+        $this->balances[$id] = $balance - $value;
 
         return $this->balances[$id];
     }

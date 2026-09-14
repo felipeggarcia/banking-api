@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Banking\AccountNotFound;
+use Banking\InsufficientFunds;
 use Banking\Accounts;
 use PHPUnit\Framework\TestCase;
 
@@ -47,15 +48,28 @@ final class AccountsTest extends TestCase
 
         $accounts->withdraw('1234',20);
     }
-
     public function test_withdraw_reduces_balance_of_existing_account(): void
     {
         $accounts = new Accounts();
 
         $accounts->deposit('100', 100);
-        
+
         $accounts->withdraw('100', 20);
 
         $this->assertSame(80, $accounts->balanceOf('100'));
     }
+
+    public function test_withdraw_with_insufficient_funds_is_rejected(): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 20);
+
+        $this->expectException(InsufficientFunds::class);
+
+        $accounts->withdraw('100', 100);
+    }
+
 }
+
+    
