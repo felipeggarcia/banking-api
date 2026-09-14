@@ -50,4 +50,21 @@ final class RouterTest extends TestCase
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('0', (string) $response->getBody());
     }
+
+    public function test_deposit_event_creates_account_and_responds_201(): void
+    {
+        $accounts = new Accounts();
+        $router = new Router($accounts);
+
+            $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode([
+            'type' => 'deposit',
+            'destination' => '100',
+            'amount' => 10,
+        ])));
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame('{"destination":{"id":"100","balance":10}}', (string) $response->getBody());
+        $this->assertSame(10, $accounts->balanceOf('100'));
+
+    }
 }

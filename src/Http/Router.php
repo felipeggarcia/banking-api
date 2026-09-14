@@ -22,6 +22,7 @@ final class Router
 
         return match (true) {
             $method === 'POST' && $path === '/reset' => $this->reset(),
+            $method === 'POST' && $path === '/event' => $this->event($request),
             $method === 'GET' && $path === '/balance' => $this->balance($request),
         };
     }
@@ -41,5 +42,23 @@ final class Router
         } catch (AccountNotFound) {
             return new Response(404, [], '0');
         }
+    }
+
+        private function event(ServerRequestInterface $request): Response
+    {
+        $body = json_decode((string) $request->getBody(), true);
+
+        $type= $body['type'];
+        $destination= $body['destination'];
+        $amount= $body['amount'];
+
+        switch ($type){
+            case 'deposit' :
+                $this->accounts->deposit($destination,$amount);
+                $balance = $this->accounts->balanceOf($destination);
+                $response['destination'] = ['id'=> $destination, 'balance'=>$balance];
+                return  new Response(201, [],  json_encode($response));
+        }
+
     }
 }
