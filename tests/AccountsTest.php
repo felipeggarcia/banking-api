@@ -110,6 +110,31 @@ final class AccountsTest extends TestCase
         $this->assertSame(20, $accounts->balanceOf('300'));
     }
 
+    public function test_transfer_from_non_existing_origin_is_rejected (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('300', 50);
+
+        $this->expectException(AccountNotFound::class);
+
+        $accounts->transfer('100', '300', 20);
+
+    }
+    public function test_transfer_from_non_existing_origin_leaves_destination_untouched (): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('300', 50);
+
+        try {
+            $accounts->transfer('100', '300', 20);
+            $this->fail('Expected AccountNotFound.');
+        } catch (AccountNotFound) {}
+        
+        $this->assertSame(50, $accounts->balanceOf('300'));
+    }
+
 }
 
     
