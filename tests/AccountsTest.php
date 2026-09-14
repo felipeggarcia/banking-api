@@ -47,4 +47,15 @@ final class AccountsTest extends TestCase
 
         $accounts->withdraw('1234',20);
     }
+
+    public function test_withdraw_reduces_balance_of_existing_account(): void
+    {
+        $accounts = new Accounts();
+
+        $accounts->deposit('100', 100);
+        
+        $accounts->withdraw('100', 20);
+
+        $this->assertSame(80, $accounts->balanceOf('100'));
+    }
 }

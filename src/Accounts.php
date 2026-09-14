@@ -30,8 +30,10 @@ final class Accounts
     }
 
     public function withdraw(string $id,int $value): int
-    {
-        return $this->balanceOf($id);
+    {   
+        $this->balances[$id] = $this->balanceOf($id) - $value;
+
+        return $this->balances[$id];
     }
 
 }
