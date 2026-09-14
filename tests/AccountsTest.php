@@ -38,4 +38,13 @@ final class AccountsTest extends TestCase
 
         $this->assertSame(25, $accounts->balanceOf('100'));
     }
+
+    public function test_withdraw_from_non_existing_account_is_rejected(): void
+    {
+        $accounts = new Accounts();
+
+        $this->expectException(AccountNotFound::class);
+
+        $accounts->withdraw('1234',20);
+    }
 }

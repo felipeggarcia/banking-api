@@ -28,4 +28,10 @@ final class Accounts
 
         return $this->balances[$id];
     }
+
+    public function withdraw(string $id,int $value): int
+    {
+        return $this->balanceOf($id);
+    }
+
 }
