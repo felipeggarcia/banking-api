@@ -25,6 +25,8 @@
 
     "scripts": {
     "test": "phpunit"
+    },
+    "require": {
+        "react/http": "^1.11"
     }
-
 }
