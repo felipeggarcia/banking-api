@@ -17,6 +17,15 @@ final class Router
 
     public function handle(ServerRequestInterface $request): Response
     {
+        try {
+            return $this->route($request);
+        } catch (AccountNotFound) {
+            return new Response(404, [], '0');
+        }
+    }
+
+    private function route(ServerRequestInterface $request): Response
+    {
         $method = $request->getMethod();
         $path = $request->getUri()->getPath();
 
@@ -36,12 +45,9 @@ final class Router
 
     private function balance(ServerRequestInterface $request): Response
     {
-        try{
-            $id = (string) ($request->getQueryParams()['account_id'] ?? '');   
-             return new Response(200, [], (string) $this->accounts->balanceOf($id));
-        } catch (AccountNotFound) {
-            return new Response(404, [], '0');
-        }
+        $id = (string) ($request->getQueryParams()['account_id'] ?? '');
+
+        return new Response(200, [], (string) $this->accounts->balanceOf($id));
     }
 
     private function event(ServerRequestInterface $request): Response
@@ -89,4 +95,5 @@ final class Router
     {
         return new Response(201, [], (string) json_encode($payload));
     }
+
 }

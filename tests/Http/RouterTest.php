@@ -7,6 +7,7 @@ namespace Tests\Http;
 use Banking\Domain\AccountNotFound;
 use Banking\Domain\Accounts;
 use Banking\Http\Router;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use React\Http\Message\ServerRequest;
 
@@ -107,6 +108,29 @@ final class RouterTest extends TestCase
 
         $this->assertSame(70, $accounts->balanceOf('100'));
         $this->assertSame(30, $accounts->balanceOf('300'));
+
+    }
+
+    
+    public static function eventsRequiringExistingOrigin(): array
+    {
+        return [
+            'withdraw' => [['type' => 'withdraw', 'origin' => '200', 'amount' => 10]],
+            'transfer' => [['type' => 'transfer', 'origin' => '200', 'destination' => '300', 'amount' => 10]],
+        ];
+    }
+
+    #[DataProvider('eventsRequiringExistingOrigin')]
+    public function test_event_with_unknown_account_responds_404(array $payload): void
+    {
+        $accounts = new Accounts();
+
+        $router = new Router($accounts);
+
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode($payload)));
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('0', (string) $response->getBody());
 
     }
 }
