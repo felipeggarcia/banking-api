@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Banking;
+namespace Banking\Domain;
 
 final class Accounts
 {

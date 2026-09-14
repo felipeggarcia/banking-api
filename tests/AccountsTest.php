@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Banking\AccountNotFound;
-use Banking\InsufficientFunds;
-use Banking\Accounts;
+use Banking\Domain\AccountNotFound;
+use Banking\Domain\InsufficientFunds;
+use Banking\Domain\Accounts;
 use PHPUnit\Framework\TestCase;
 
 final class AccountsTest extends TestCase
@@ -70,7 +70,7 @@ final class AccountsTest extends TestCase
 
         $accounts->withdraw('100', 100);
     }
-    
+
     public function test_withdraw_with_insufficient_funds_leaves_balance_unchanged (): void
     {
         $accounts = new Accounts();
