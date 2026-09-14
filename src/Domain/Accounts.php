@@ -18,7 +18,7 @@ final class Accounts
         return $this->balances[$id];
     }
 
-    public function deposit(string $id, int $value): int
+    public function deposit(string $id, int $value): void
     {
         $this->guardPositive($value);
 
@@ -27,11 +27,9 @@ final class Accounts
         }
 
         $this->balances[$id] += $value;
-
-        return $this->balances[$id];
     }
 
-    public function withdraw(string $id, int $value): int
+    public function withdraw(string $id, int $value): void
     { 
         $this->guardPositive($value);
 
@@ -42,11 +40,9 @@ final class Accounts
         }
 
         $this->balances[$id] = $balance - $value;
-
-        return $this->balances[$id];
     }
 
-    public function transfer(string $idOrigin, string $idDestination, int $value): int
+    public function transfer(string $idOrigin, string $idDestination, int $value): void
     { 
         $this->guardPositive($value);
 
@@ -60,8 +56,6 @@ final class Accounts
 
         $this->balances[$idOrigin] = $originBalance - $value;
         $this->balances[$idDestination] = $destinationBalance + $value;
-
-        return $this->balances[$idOrigin];
     }
 
     public function reset (): void
