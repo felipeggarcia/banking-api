@@ -133,4 +133,27 @@ final class RouterTest extends TestCase
         $this->assertSame('0', (string) $response->getBody());
 
     }
+    public static function eventsExceedingBalance(): array
+    {
+        return [
+            'withdraw' => [['type' => 'withdraw', 'origin' => '100', 'amount' => 30]],
+            'transfer' => [['type' => 'transfer', 'origin' => '100', 'destination' => '300', 'amount' => 30]],
+        ];
+    }
+
+    #[DataProvider('eventsExceedingBalance')]
+    public function test_event_with_insufficient_funds_responds_422(array $payload): void
+    {
+        $accounts = new Accounts();
+
+        $router = new Router($accounts);
+
+        $accounts->deposit('100', 10);
+        $accounts->deposit('300', 50);
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode($payload)));
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('0', (string) $response->getBody());
+
+    }
 }

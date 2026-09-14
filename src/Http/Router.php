@@ -6,6 +6,7 @@ namespace Banking\Http;
 
 use Banking\Domain\Accounts;
 use Banking\Domain\AccountNotFound;
+use Banking\Domain\InsufficientFunds;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
 
@@ -21,6 +22,8 @@ final class Router
             return $this->route($request);
         } catch (AccountNotFound) {
             return new Response(404, [], '0');
+        } catch (InsufficientFunds) {
+            return new Response(422, [], '0');
         }
     }
 
