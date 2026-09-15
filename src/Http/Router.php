@@ -23,10 +23,8 @@ final class Router
             return $this->route($request);
         } catch (AccountNotFound) {
             return $this->notFound();
-        } catch (InsufficientFunds) {
-            return new Response(422, [], '0');
-        } catch (InvalidAmount) {
-            return new Response(422, [], '0');
+        } catch (InsufficientFunds | InvalidAmount) {
+            return $this->unprocessable();
         }
     }
 
@@ -86,7 +84,7 @@ final class Router
                 ]);
 
             default:
-                return new Response(400, [], '0');
+                return $this->badRequest();
         }
     }
 
@@ -109,6 +107,16 @@ final class Router
     private function notFound(): Response
     {
         return new Response(404, [], '0');
+    }
+
+    private function unprocessable(): Response
+    {
+        return new Response(422, [], '0');
+    }
+
+    private function badRequest(): Response
+    {
+        return new Response(400, [], '0');
     }
 
 }
