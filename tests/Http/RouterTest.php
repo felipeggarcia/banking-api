@@ -187,4 +187,37 @@ final class RouterTest extends TestCase
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('0', (string) $response->getBody());
     }
+
+        public static function eventsNegativeAmount(): array
+    {
+        return [
+            'deposit negative' => [['type' => 'deposit', 'destination' => '100', 'amount' => -30]],
+            'deposit zero' => [['type' => 'deposit', 'destination' => '100', 'amount' => 0]],
+            'withdraw negative' => [['type' => 'withdraw', 'origin' => '100', 'amount' => -30]],
+            'withdraw zero' => [['type' => 'withdraw', 'origin' => '100', 'amount' => 0]],
+            'transfer negative' => [['type' => 'transfer', 'origin' => '100', 'destination' => '300', 'amount' => -30]],
+            'transfer zero' => [['type' => 'transfer', 'origin' => '100', 'destination' => '300', 'amount' => 0]],
+        ];
+    }
+
+    #[DataProvider('eventsNegativeAmount')]
+    public function test_event_with_non_positive_amount_responds_422(array $payload): void
+    {
+        $accounts = new Accounts();
+
+        $router = new Router($accounts);
+
+        $accounts->deposit('100', 10);
+        $accounts->deposit('300', 50);
+
+        $response = $router->handle(new ServerRequest('POST', '/event', [], json_encode($payload)));
+        
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('0', (string) $response->getBody());
+
+        $this->assertSame(10, $accounts->balanceOf('100'));
+        $this->assertSame(50, $accounts->balanceOf('300'));
+
+    }
 }
